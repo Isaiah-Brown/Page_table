@@ -70,14 +70,20 @@ sys_sleep(void)
 }
 
 
-#ifdef LAB_PGTBL
-int
+
+uint64
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
-  return 0;
+  printf("pgaccess called");
+
+  char *base = "we";
+  int len = 4;
+  char *mask = "we";
+ 
+  return pgaccess(base, len, mask);
 }
-#endif
+
 
 uint64
 sys_kill(void)

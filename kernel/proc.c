@@ -579,6 +579,12 @@ wakeup(void *chan)
   }
 }
 
+int
+pgaccess(void *base, int len, void *mask) {
+  printf("pgaccess running");
+  return 0;
+}
+
 // Kill the process with the given pid.
 // The victim won't exit until it tries to return
 // to user space (see usertrap() in trap.c).
