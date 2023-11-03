@@ -6,6 +6,7 @@
 #include "defs.h"
 #include "fs.h"
 
+
 /*
  * the kernel's page table.
  */
@@ -288,8 +289,33 @@ freewalk(pagetable_t pagetable)
 
 void
 vmprint(pagetable_t pagetable){
-  printf("%p\n", pagetable);
-  printf("vmprint called\n");
+  printf("page table %p\n", pagetable);
+  vmprint_helper(pagetable, 0);
+}
+
+void
+vmprint_helper(pagetable_t pagetable, int depth) {
+   // there are 2^9 = 512 PTEs in a page table.
+
+  for(int i = 0; i < 512; i++){
+    pte_t pte = pagetable[i];
+    uint64 child = PTE2PA(pte);
+    if(pte & PTE_V){
+      vmprint_depth_helper(depth);
+      printf("%d: pte %p pa %p\n", i, pte, child);
+      if((pte & (PTE_R|PTE_W|PTE_X)) == 0){
+        // this PTE points to a lower-level page table.
+        vmprint_helper((pagetable_t)child, depth + 1);
+      }
+    }
+  }
+}
+
+void vmprint_depth_helper(int depth) {
+  printf("..");
+  for(int i = 0; i < depth; i++) {
+    printf(" ..");
+  }
 }
 
 // Free user memory pages,
