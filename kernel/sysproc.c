@@ -77,10 +77,18 @@ sys_pgaccess(void)
   // lab pgtbl: your code here.
   printf("pgaccess called");
 
-  char *base = "we";
+  //uint64 base;
+  //int len;
+  //uint64 mask;
+
+  char *base = "base";
   int len = 4;
-  char *mask = "we";
- 
+  char *mask = "mask";
+
+  //argaddr(0, base);
+  //argint(1, len);
+  //argaddr(2, &mask);
+
   return pgaccess(base, len, mask);
 }
 
