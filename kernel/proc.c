@@ -581,7 +581,22 @@ wakeup(void *chan)
 
 int
 pgaccess(void *base, int len, void *mask) {
-  printf("pgaccess running");
+ 
+  uint64 abits = 0;
+  uint64 nbase = (uint64) base;
+  uint64 nmask = (uint64) mask;
+  struct proc *p = myproc();
+  pagetable_t pagetable = p->pagetable;
+
+  for (int i = 0; i < len; i++) {
+    pte_t *pte = walk(pagetable, nbase + i * PGSIZE, 0);
+    if (*pte & PTE_A) {
+      abits = abits | 1 << i;
+      *pte = *pte & ~PTE_A;
+    }
+
+  }
+  copyout(pagetable, nmask, (char *)&abits, sizeof(abits));
   return 0;
 }
 

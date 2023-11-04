@@ -75,8 +75,6 @@ uint64
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
-  printf("pgaccess called");
-
   uint64 base;
   int len;
   uint64 mask;
