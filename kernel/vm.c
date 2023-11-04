@@ -288,30 +288,29 @@ freewalk(pagetable_t pagetable)
 }
 
 void
-vmprint(pagetable_t pagetable){
-  printf("page table %p\n", pagetable);
+vmprint(pagetable_t pagetable){                  //prints pagetable
+  printf("page table %p\n", pagetable); 
   vmprint_helper(pagetable, 0);
 }
 
 void
-vmprint_helper(pagetable_t pagetable, int depth) {
-   // there are 2^9 = 512 PTEs in a page table.
-
-  for(int i = 0; i < 512; i++){
+vmprint_helper(pagetable_t pagetable, int depth) {      // recursive helper so depth can be printed
+   
+  for(int i = 0; i < 512; i++){                         // there are 2^9 = 512 PTEs in a page table.
     pte_t pte = pagetable[i];
     uint64 child = PTE2PA(pte);
-    if(pte & PTE_V){
+    if(pte & PTE_V){                                    //print page table
       vmprint_depth_helper(depth);
       printf("%d: pte %p pa %p\n", i, pte, child);
       if((pte & (PTE_R|PTE_W|PTE_X)) == 0){
-        // this PTE points to a lower-level page table.
-        vmprint_helper((pagetable_t)child, depth + 1);
+        // this PTE points to a lower-level page table. 
+        vmprint_helper((pagetable_t)child, depth + 1);  //if pagetable has a child call recursivly
       }
     }
   }
 }
 
-void vmprint_depth_helper(int depth) {
+void vmprint_depth_helper(int depth) { // so vmprint_helper is less bulky
   printf("..");
   for(int i = 0; i < depth; i++) {
     printf(" ..");

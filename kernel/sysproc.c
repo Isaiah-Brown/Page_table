@@ -79,11 +79,11 @@ sys_pgaccess(void)
   int len;
   uint64 mask;
 
-  argaddr(0, &base);
-  argint(1, &len);
+  argaddr(0, &base);          //argaddr and argint gets the arguments from the user side
+  argint(1, &len);           
   argaddr(2, &mask);
 
-  return pgaccess((void *)base, len, (void *)mask);
+  return pgaccess((void *)base, len, (void *)mask); //returns the corresponding function in proc.c like other system calls
 }
 
 

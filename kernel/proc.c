@@ -580,23 +580,23 @@ wakeup(void *chan)
 }
 
 int
-pgaccess(void *base, int len, void *mask) {
+pgaccess(void *base, int len, void *mask) {  //called by sys_pgacces
  
-  uint64 abits = 0;
-  uint64 nbase = (uint64) base;
+  uint64 abits = 0;              //what gets changed
+  uint64 nbase = (uint64) base;  //walk() and copyout() only take uint64
   uint64 nmask = (uint64) mask;
   struct proc *p = myproc();
-  pagetable_t pagetable = p->pagetable;
+  pagetable_t pagetable = p->pagetable;  //get pagetable from proc
 
-  for (int i = 0; i < len; i++) {
-    pte_t *pte = walk(pagetable, nbase + i * PGSIZE, 0);
-    if (*pte & PTE_A) {
-      abits = abits | 1 << i;
-      *pte = *pte & ~PTE_A;
-    }
+  for (int i = 0; i < len; i++) {                         //use passed in len                
+    pte_t *pte = walk(pagetable, nbase + i * PGSIZE, 0);  //get pte address from base adress
+    if (*pte & PTE_A) {       //pte was accessed
+      abits = abits | 1 << i;   //set abits
+      *pte = *pte & ~PTE_A;     //make sure to clear PTE_A
+    } 
 
   }
-  copyout(pagetable, nmask, (char *)&abits, sizeof(abits));
+  copyout(pagetable, nmask, (char *)&abits, sizeof(abits)); //copy abits from kernel to user
   return 0;
 }
 
